@@ -63,6 +63,24 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
 
    // ADD CODE HERE:  add your code here for computing the sobel stencil computation at location (i,j)
    // of input s, returning a float
+   double tmp_x=0.0;
+   double tmp_y=0.0;
+   
+   int s_offset_x = (i-1)*nrows + (j-1); 
+   for (int ii = 0; ii<3; ii++, s_offset_x += nrows){
+      for (int jj = 0; jj<3; jj++){
+         tmp_x += s[s_offset_x+jj] * gx[3*ii+jj];
+      } 
+   }
+
+   int s_offset_y = (j-1)*ncols + (i-1); 
+   for (int jj = 0; jj<3; jj++, s_offset_y += ncols){
+      for (int ii = 0; ii<3; ii++){
+         tmp_y += s[ii+s_offset_y] * gy[ii+jj*3];
+      } 
+   }
+
+   t = sqrt(pow(tmp_x, 2)+pow(tmp_y, 2));
 
    return t;
 }
@@ -95,11 +113,33 @@ sobel_kernel_gpu(float *s,  // source image pixels
 
    // because this is CUDA, you need to use CUDA built-in variables to compute an index and stride
    // your processing motif will be very similar here to that we used for vector add in Lab #2
+   int index = blockIdx.gx * blockDim.gx + threadIdx.gx;
+   int stride = blockDim.gx * gridDim.gx;
+   for(int i = index; i < n-1; i += stride){
+      for(int j = index; j < n-1; j += stride){
+         out[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
+      }
+   }
 }
 
 int
 main (int ac, char *av[])
 {
+   int cmdline_T = -1; 
+   int cmdline_B = -1;
+   int c;
+   while ( (c = getopt(argc, argv, "T:B:")) != -1) {
+      switch(c) {
+         case 'T':
+            cmdline_T = std::atoi(optarg == NULL ? "-999" : optarg);
+            // std::cout << "Command line number of threads per thread block : " << cmdline_T << std::endl;
+            break;
+         case 'B':
+            cmdline_B = std::atoi(optarg == NULL ? "-999" : optarg);
+            // std::cout << "Command line numbers of thread blocks: " << cmdline_B << std::endl;
+            break;
+      }
+   }
    // input, output file names hard coded at top of file
 
    // load the input file
@@ -154,16 +194,39 @@ main (int ac, char *av[])
    cudaMemPrefetchAsync((void *)device_gy, sizeof(Gy)*sizeof(float), deviceID);
 
    // set up to run the kernel
-   int nBlocks=1, nThreadsPerBlock=256;
+   // int nBlocks=1, nThreadsPerBlock=256;
 
    // ADD CODE HERE: insert your code here to set a different number of thread blocks or # of threads per block
 
 
+   // set up the numbers of thread blocks
+   int default_block_sizes[] = {1, 4, 16, 64, 256, 1024, 4096};
+   std::vector<int> nBlocks;
 
-   printf(" GPU configuration: %d blocks, %d threads per block \n", nBlocks, nThreadsPerBlock);
+   if (cmdline_B > 0)
+      nBlocks.push_back(cmdline_B);
+   else
+   {
+      for (int i : default_block_sizes)
+         nBlocks.push_back(i);
+   }
 
+   // set up number of threads per thread block 
+   int default_threads_per_block[] = {32, 64, 128, 256, 512, 1024};
+   std::vector<int> nThreadsPerBlock;
+
+   if (cmdline_T > 0)
+      nThreadsPerBlock.push_back(cmdline_T);
+   else
+   {
+      for (int i : default_threads_per_block)
+         nThreadsPerBlock.push_back(i);
+   }
+   for (int b : nBlocks){
+      for (int t : nThreadsPerBlock){
+      printf(" GPU configuration: %d blocks, %d threads per block \n", b, t);
    // invoke the kernel on the device
-   sobel_kernel_gpu<<<nBlocks, nThreadsPerBlock>>>(in_data_floats, out_data_floats, nvalues, data_dims[1], data_dims[0], device_gx, device_gy);
+   sobel_kernel_gpu<<<b, t>>>(in_data_floats, out_data_floats, nvalues, data_dims[1], data_dims[0], device_gx, device_gy);
 
    // wait for it to finish, check errors
    gpuErrchk (  cudaDeviceSynchronize() );
@@ -183,6 +246,8 @@ main (int ac, char *av[])
    }
    else
       printf(" Wrote the output file %s \n", output_fname);
+      }
+   }
    fclose(f);
 }
 
