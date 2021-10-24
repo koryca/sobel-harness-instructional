@@ -118,9 +118,7 @@ sobel_kernel_gpu(float *s,  // source image pixels
    for (int i = index; i < n; i+=stride){
       //compute row and column from i
       int r = i+1; 
-      int j = ncols*r+1;
-      printf("i is %d \n", i);
-      printf("j is %d \n", j);
+      int j = ncols/r+1;
       d[i] = sobel_filtered_pixel(s, r, j, ncols, nrows, gx, gy);
    }
 }
