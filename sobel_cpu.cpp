@@ -48,6 +48,29 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
 
    // ADD CODE HERE: add your code here for computing the sobel stencil computation at location (i,j)
    // of input s, returning a float
+   double tmp_x=0.0;
+   double tmp_y=0.0;
+
+#pragma omp parallel
+{
+   
+   int s_offset_x = (ncols-1)*3 + nrows-1; 
+   #pragma omp for collapse(2)
+   for (int ii = 0; ii<3; ii++, s_offset_x += 1){
+   for (int jj = 0; jj<3; jj++){
+      tmp_x += s[s_offset_x+j] * gx[i+j];
+      } 
+   }
+
+   int s_offset_y = (nrows-1)*3 + ncols-1; // the upper left edge of the stencil in S
+   #pragma omp for collapse(2)
+   for (int jj = 0; jj<3; jj++, s_offset_y += 1){// for each row, advance s_offset by width
+   for (int ii = 0; ii<3; ii++){// for all columns in the stencil window
+      tmp_y += s[i+s_offset_y] * gy[i+j];
+      } 
+   }
+}
+   t = sqrt(pow(tmp_x, 2)+pow(tmp_y,2));
 
    return t;
 }
@@ -73,7 +96,11 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
 
    // ADD CODE HERE: insert your code here that iterates over every (i,j) of input,  makes a call
    // to sobel_filtered_pixel, and assigns the resulting value at location (i,j) in the output.
-
+   for(int i = 1; i < nrows-2; i++){
+      for(int j = 1; j < ncols-2; j++){
+         out[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
+      }
+   }
 }
 
 
