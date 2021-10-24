@@ -54,14 +54,14 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
    int s_offset_x = (j-1)*nrows + (i-1); 
    for (int ii = 0; ii<3; ii++, s_offset_x += nrows){
       for (int jj = 0; jj<3; jj++){
-         tmp_x += s[s_offset_x+j] * gx[s_offset_x*ii+jj];
+         tmp_x += s[s_offset_x+j] * gx[3*ii+jj];
       } 
    }
 
    int s_offset_y = (i-1)*ncols + j-1; 
    for (int jj = 0; jj<3; jj++, s_offset_y += ncols){
       for (int ii = 0; ii<3; ii++){
-         tmp_y += s[i+s_offset_y] * gy[ii+jj*s_offset_y];
+         tmp_y += s[i+s_offset_y] * gy[ii+jj*3];
       } 
    }
 
@@ -91,8 +91,8 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
    // ADD CODE HERE: insert your code here that iterates over every (i,j) of input,  makes a call
    // to sobel_filtered_pixel, and assigns the resulting value at location (i,j) in the output.
    #pragma omp parallel for collapse(2)
-   for(int i = 1; i < nrows-2; i++){
-      for(int j = 1; j < ncols-2; j++){
+   for(int i = 1; i < nrows-1; i++){
+      for(int j = 1; j < ncols-1; j++){
          out[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
       }
    }
