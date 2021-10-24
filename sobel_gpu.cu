@@ -113,11 +113,13 @@ sobel_kernel_gpu(float *s,  // source image pixels
 
    // because this is CUDA, you need to use CUDA built-in variables to compute an index and stride
    // your processing motif will be very similar here to that we used for vector add in Lab #2
-   int index = blockIdx.gx * blockDim.gx + threadIdx.gx;
-   int stride = blockDim.gx * gridDim.gx;
-   for(int i = index; i < n-1; i += stride){
-      for(int j = index; j < n-1; j += stride){
-         out[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
+   int index_x = blockIdx.gx * blockDim.gx + threadIdx.gx;
+   int stride_x = blockDim.gx * gridDim.gx;
+   for(int i = index_x; i < n-1; i += stride_x){
+      int index_y = blockIdx.gy * blockDim.gy + threadIdx.gy;
+      int stride_y = blockDim.gy * gridDim.gy;
+      for(int j = index_y; j < n-1; j += stride_y){
+         out[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, gx, gy);
       }
    }
 }
