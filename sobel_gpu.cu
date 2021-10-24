@@ -115,8 +115,8 @@ sobel_kernel_gpu(float *s,  // source image pixels
    // your processing motif will be very similar here to that we used for vector add in Lab #2
    int index_x = blockIdx.x * blockDim.x + threadIdx.x;
    int stride_x = blockDim.x * gridDim.x;
-   for(int i = index_x -1; i < n-1; i += stride_x){
-      for(int j = index_x -1; j < n-1; j += stride_x){
+   for(int i = index_x + 1; i < n-1; i += stride_x){
+      for(int j = index_x + 1; j < n-1; j += stride_x){
          d[i+j] = sobel_filtered_pixel(s, i, j, ncols, nrows, gx, gy);
       }
    }
