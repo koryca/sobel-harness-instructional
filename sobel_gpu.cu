@@ -115,6 +115,8 @@ sobel_kernel_gpu(float *s,  // source image pixels
    // your processing motif will be very similar here to that we used for vector add in Lab #2
    int index = blockIdx.x * blockDim.x + threadIdx.x;
    int stride  = blockDim.x * gridDim.x;
+   printf("index is %d \n", index);
+   printf("stride is %d \n", stride);
    for (int i = index; i < n; i+=stride){
       //compute row and column from i 
       int j = ncols - i;
