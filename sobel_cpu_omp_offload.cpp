@@ -120,7 +120,9 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
    #pragma omp target teams distribute parallel for collapse(2)
     for(int i = 0; i < height; i++){
       for(int j = 0; j < width; j++){
-         out[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
+         if(i==0 || j==0 || i==(nrows-1) || j==(ncols-1)) out[i+j] = 0.0;
+         // if(i > 10 && j > 10) break;
+         out[i*ncols+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
       }
    }
 
