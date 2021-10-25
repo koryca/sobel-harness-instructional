@@ -124,7 +124,7 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
       }
    }
 
-   #pragma omp target teams distribute parallel for collapse(2)
+   #pragma omp target teams distribute parallel for
    for(out_indx = 0; out_indx < nvals; out_indx++){
       out[out_indx] = d[out_indx];
    }
