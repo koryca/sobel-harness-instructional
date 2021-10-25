@@ -117,14 +117,14 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
    // You may also wish to consider additional clauses that might be appropriate here to increase parallelism 
    // if you are using nested loops.
    float *d;
-   #pragma omp target teams parallel for collapse(2)
+   #pragma omp target teams distribute parallel for collapse(2)
     for(int i = 0; i < height; i++){
       for(int j = 0; j < width; j++){
          d[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
       }
    }
 
-   #pragma omp target teams parallel for collapse(2)
+   #pragma omp target teams distribute parallel for collapse(2)
    for(out_indx = 0; out_indx < nvals; out_indx++){
       out[out_indx] = d[out_indx];
    }
