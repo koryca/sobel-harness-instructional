@@ -117,9 +117,9 @@ sobel_kernel_gpu(float *s,  // source image pixels
    int stride  = blockDim.x * gridDim.x;
    for (int i = index; i < n; i+=stride){
       //compute row and column from i 
-      int r = i+1;
-      int j = i%ncols+1;
-      d[i] = sobel_filtered_pixel(s, i, j, ncols, nrows, gx, gy);
+      int r = i*ncols;//how to get consecutive r?
+      int j = i%ncols;
+      d[i] = sobel_filtered_pixel(s, r, j, ncols, nrows, gx, gy);
    }
 }
 
@@ -180,7 +180,7 @@ main (int ac, char *av[])
    cudaMemPrefetchAsync((void *)device_gy, sizeof(Gy)*sizeof(float), deviceID);
 
    // set up to run the kernel
-   int nBlocks=1, nThreadsPerBlock=256;
+   int nBlocks=1, nThreadsPerBlock=1;
 
    // ADD CODE HERE: insert your code here to set a different number of thread blocks or # of threads per block
 
