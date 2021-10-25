@@ -184,16 +184,30 @@ main (int ac, char *av[])
    cudaMemPrefetchAsync((void *)device_gy, sizeof(Gy)*sizeof(float), deviceID);
 
    // set up to run the kernel
-   int nBlocks=1, nThreadsPerBlock=1;
+   // int nBlocks=1, nThreadsPerBlock=256;
 
    // ADD CODE HERE: insert your code here to set a different number of thread blocks or # of threads per block
+   // set up the numbers of thread blocks
+   int default_block_sizes[] = {1, 4, 16, 64, 256, 1024, 4096};
+   std::vector<int> nBlocks;
 
 
+   for (int i : default_block_sizes)
+      nBlocks.push_back(i);
+  
+   // set up number of threads per thread block 
+   int default_threads_per_block[] = {32, 64, 128, 256, 512, 1024};
+   std::vector<int> nThreadsPerBlock;
 
-   printf(" GPU configuration: %d blocks, %d threads per block \n", nBlocks, nThreadsPerBlock);
+   for (int i : default_threads_per_block)
+      nThreadsPerBlock.push_back(i);
+
+   for (int b : nBlocks){
+      for (int t : nThreadsPerBlock){
+   printf(" GPU configuration: %d blocks, %d threads per block \n", b, t);
 
    // invoke the kernel on the device
-   sobel_kernel_gpu<<<nBlocks, nThreadsPerBlock>>>(in_data_floats, out_data_floats, nvalues, data_dims[1], data_dims[0], device_gx, device_gy);
+   sobel_kernel_gpu<<<b, t>>>(in_data_floats, out_data_floats, nvalues, data_dims[1], data_dims[0], device_gx, device_gy);
 
    // wait for it to finish, check errors
    gpuErrchk (  cudaDeviceSynchronize() );
@@ -213,6 +227,8 @@ main (int ac, char *av[])
    }
    else
       printf(" Wrote the output file %s \n", output_fname);
+      }
+   }
    fclose(f);
 }
 
