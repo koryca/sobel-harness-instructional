@@ -66,7 +66,7 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
    
    int s_offset_x = i*nrows + j; 
    // printf("x offset is %d \n", s_offset_x);
-   std::cout << "x offset is " << s_offset_x << endl;
+   // std::cout << "x offset is " << s_offset_x << endl;
    for (int ii = 0; ii<3; ii++, s_offset_x += nrows){
       for (int jj = 0; jj<3; jj++){
          tmp_x += s[s_offset_x+jj] * gx[3*ii+jj];
@@ -75,7 +75,7 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
 
    int s_offset_y = j*ncols + i; 
    // printf("y offset is %d \n", s_offset_y);
-   std::cout << "y offset is " << s_offset_y << endl;
+   // std::cout << "y offset is " << s_offset_y << endl;
    for (int jj = 0; jj<3; jj++, s_offset_y += ncols){
       for (int ii = 0; ii<3; ii++){
          tmp_y += s[ii+s_offset_y] * gy[ii+jj*3];
@@ -120,10 +120,10 @@ sobel_kernel_gpu(float *s,  // source image pixels
    for (int i = index; i < n; i+=stride){
       //compute row and column from i 
       int r = i/ncols;
-      std::cout << "r is " << r << endl;
+      std::cout << "r is " << r << std::endl;
       // printf("r is %d \n", r);
       int j = i%ncols;
-      std::cout << "j is " << j << endl;
+      std::cout << "j is " << j << std::endl;
       // printf("j is %d \n", j);
       d[i] = sobel_filtered_pixel(s, r, j, ncols, nrows, gx, gy);
    }
