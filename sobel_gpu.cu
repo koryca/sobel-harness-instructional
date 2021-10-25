@@ -65,7 +65,7 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
    double tmp_y=0.0;
    
    int s_offset_x = i*nrows + j; 
-   printf("x offset is %d \n", s_offset_x);
+   // printf("x offset is %d \n", s_offset_x);
    // std::cout << "x offset is " << s_offset_x << endl;
    for (int ii = 0; ii<3; ii++, s_offset_x += nrows){
       for (int jj = 0; jj<3; jj++){
@@ -74,7 +74,7 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
    }
 
    int s_offset_y = j*ncols + i; 
-   printf("y offset is %d \n", s_offset_y);
+   // printf("y offset is %d \n", s_offset_y);
    // std::cout << "y offset is " << s_offset_y << endl;
    for (int jj = 0; jj<3; jj++, s_offset_y += ncols){
       for (int ii = 0; ii<3; ii++){
