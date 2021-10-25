@@ -123,7 +123,7 @@ sobel_kernel_gpu(float *s,  // source image pixels
       printf("i is %d \n", i);
       printf("ncols is %d \n", ncols);
       //compute row and column from i 
-      int r = i/ncols;
+      int r = i/ncols+1;
       printf("r is %d \n", r);
       int j = i%ncols;
       printf("j is %d \n", j);
