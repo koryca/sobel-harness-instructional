@@ -65,7 +65,7 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
    }
 
    t = sqrt(pow(tmp_x, 2)+pow(tmp_y, 2));
-   printf("t is: %f \n", t);
+   // printf("t is: %f \n", t);
 
    return t;
 }
