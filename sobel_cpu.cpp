@@ -59,12 +59,13 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
          tmp_x += s[s_offset_y+j] * gx[ii+jj];
          // printf("gx is: i=%d, j=%d, gx=%f \n", ii, jj, gx[ii+jj]);
          // printf("s is: i=%d, j=%d, s_off=%f, s=%f \n", i, j, s[s_offset_y+j], s[i+j]);
-         printf("tmp_x is: %f \n", tmp_x);
+         // printf("tmp_x is: %f \n", tmp_x);
          tmp_y += s[i+s_offset_y] * gy[ii+jj];
       } 
    }
 
    t = sqrt(pow(tmp_x, 2)+pow(tmp_y, 2));
+   printf("t is: %f \n", t);
 
    return t;
 }
