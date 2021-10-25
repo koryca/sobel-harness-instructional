@@ -57,7 +57,7 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
    for (int jj = 0; jj<3; jj++, s_offset += ncols){
       for (int ii = 0; ii<3; ii++){
          tmp_x += s[ii*nrows+s_offset] * gx[ii+jj*3];
-         tmp_y += s[jj*nrows+s_offset] * gy[ii+jj*3];
+         tmp_y += s[jj*ncols+s_offset] * gy[ii+jj*3];
       } 
    }
 
