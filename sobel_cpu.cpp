@@ -52,14 +52,11 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
    float tmp_y=0.0;
    
    // int s_offset_x = i*nrows + j;
-   int s_offset = i*ncols + j;  
+   int s_offset = i*nrows + j;  
    // printf("x offset is %d \n", s_offset_x);
    for (int jj = 0; jj<3; jj++, s_offset += ncols){
       for (int ii = 0; ii<3; ii++){
          tmp_x += s[s_offset+j] * gx[ii+jj];
-         // printf("gx is: i=%d, j=%d, gx=%f \n", ii, jj, gx[ii+jj]);
-         // printf("s is: i=%d, j=%d, s_off=%f, s=%f \n", i, j, s[s_offset_y+j], s[i+j]);
-         // printf("tmp_x is: %f \n", tmp_x);
          tmp_y += s[i+s_offset] * gy[ii+jj];
       } 
    }
@@ -94,7 +91,8 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
    for(int i = 0; i < nrows; i++){
       for(int j = 0; j < ncols; j++){
          if(i==0 || j==0 || i==(nrows-1) || j==(ncols-1)) out[i+j] = 0.0;
-         out[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
+         // out[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
+         out[i+j] = in[i+j];
          // printf("out is: %f \n", out[i+j]);
       }
    }
