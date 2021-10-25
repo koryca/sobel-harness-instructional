@@ -53,14 +53,14 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
    // of input s, returning a float
    float tmp_x=0.0;
    float tmp_y=0.0;
-   
+   //j: row i:col
    // int s_offset_x = i*nrows + j;
-   int s_offset = i*ncols + j;  
+   int s_offset = (i-1)*ncols + (j-1);  
    // printf("x offset is %d \n", s_offset_x);
    for (int jj = 0; jj<3; jj++, s_offset += ncols){
       for (int ii = 0; ii<3; ii++){
-         tmp_x += s[ii*nrows+s_offset] * gx[ii*3+jj];
-         tmp_y += s[jj*ncols+s_offset] * gy[ii+jj*3];
+         tmp_x += s[ii+s_offset] * gx[ii+jj*3];
+         tmp_y += s[ii+s_offset] * gy[ii+jj*3];
       } 
    }
 
@@ -110,9 +110,9 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
    // if you are using nested loops.
    // float *d;
    #pragma omp target teams distribute parallel for collapse(2)
-    for(int i = 0; i < height; i++){
-      for(int j = 0; j < width; j++){
-         if(i==0 || j==0 || i==(nrows-1) || j==(ncols-1)) out[i+j] = 0.0;
+    for(int i = 0; i < nrows; i++){
+      for(int j = 0; j < ncols; j++){
+         if(i==0 || j==0 || i==(nrows-1) || j==(ncols-1)) out[i*ncols+j] = 0.0;
          // if(i > 10 && j > 10) break;
          out[i*ncols+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
       }
