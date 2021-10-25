@@ -91,6 +91,7 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
    for(int i = 0; i < nrows; i++){
       for(int j = 0; j < ncols; j++){
          if(i==0 || j==0 || i==(nrows-1) || j==(ncols-1)) out[i+j] = 0.0;
+         if(i > 10) break;
          // out[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
          out[i*nrows+j] = in[i*nrows+j];
          printf("i is: %d \n", i);
