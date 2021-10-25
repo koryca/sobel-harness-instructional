@@ -124,7 +124,7 @@ sobel_kernel_gpu(float *s,  // source image pixels
       printf("r is %d \n", r);
       int j = i%ncols;
       printf("j is %d \n", j);
-      d[i] = sobel_filtered_pixel(s, i, j, ncols, nrows, gx, gy);
+      d[i] = sobel_filtered_pixel(s, n, j, ncols, nrows, gx, gy);
    }
    
 }
