@@ -119,7 +119,7 @@ sobel_kernel_gpu(float *s,  // source image pixels
       //compute row and column from i 
       int r = i+1;
       int j = i%ncols+1;
-      d[i] = sobel_filtered_pixel(s, r, j, ncols, nrows, gx, gy);
+      d[i] = sobel_filtered_pixel(s, i, j, ncols, nrows, gx, gy);
    }
 }
 
