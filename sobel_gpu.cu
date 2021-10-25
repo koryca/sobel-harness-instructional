@@ -232,6 +232,7 @@ main (int ac, char *av[])
    //    }
    // }
    fclose(f);
+   return 0;
 }
 
 // eof
