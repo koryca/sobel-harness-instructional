@@ -54,14 +54,18 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
    double tmp_x=0.0;
    double tmp_y=0.0;
    
-   int s_offset_x = (i-1)*nrows + (j-1); 
+   int s_offset_x = i*nrows + j; 
+   // printf("x offset is %d \n", s_offset_x);
+   // std::cout << "x offset is " << s_offset_x << endl;
    for (int ii = 0; ii<3; ii++, s_offset_x += nrows){
       for (int jj = 0; jj<3; jj++){
          tmp_x += s[s_offset_x+jj] * gx[3*ii+jj];
       } 
    }
 
-   int s_offset_y = (j-1)*ncols + (i-1); 
+   int s_offset_y = i*ncols + j; 
+   // printf("y offset is %d \n", s_offset_y);
+   // std::cout << "y offset is " << s_offset_y << endl;
    for (int jj = 0; jj<3; jj++, s_offset_y += ncols){
       for (int ii = 0; ii<3; ii++){
          tmp_y += s[ii+s_offset_y] * gy[ii+jj*3];
@@ -112,8 +116,18 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
    // don't forget to include a  #pragma omp target teams parallel for around those loop(s).
    // You may also wish to consider additional clauses that might be appropriate here to increase parallelism 
    // if you are using nested loops.
+   float *d;
    #pragma omp target teams distribute parallel for
-   
+    for(int i = 1; i < height-1; i++){
+      for(int j = 1; j < width-1; j++){
+         d[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
+      }
+   }
+
+   #pragma omp target teams distribute parallel for
+   for(out_indx = 0; out_indx < nvals; out_indx++){
+      out[out_indx] = d[out_indx];
+   }
 
    } // pragma omp target data
 }

@@ -121,9 +121,9 @@ sobel_kernel_gpu(float *s,  // source image pixels
    for (int i = index; i < n; i+=stride){
       //compute row and column from i 
       int r = i/ncols;
-      printf("r is %d \n", r);
+      // printf("r is %d \n", r);
       int j = i%ncols;
-      printf("j is %d \n", j);
+      // printf("j is %d \n", j);
       d[i] = sobel_filtered_pixel(s, r, j, ncols, nrows, gx, gy);
    }
    
@@ -186,26 +186,16 @@ main (int ac, char *av[])
    cudaMemPrefetchAsync((void *)device_gy, sizeof(Gy)*sizeof(float), deviceID);
 
    // set up to run the kernel
-   int nBlocks=1, nThreadsPerBlock=1;
+   int nBlocks=1, nThreadsPerBlock=1; // default set to 1 block, 256 threads per block
 
    // ADD CODE HERE: insert your code here to set a different number of thread blocks or # of threads per block
    // set up the numbers of thread blocks
-   // int default_block_sizes[] = {1, 4, 16, 64, 256, 1024, 4096};
-   // std::vector<int> nBlocks;
 
-
-   // for (int i : default_block_sizes)
-   //    nBlocks.push_back(i);
-  
-   // // set up number of threads per thread block 
-   // int default_threads_per_block[] = {32, 64, 128, 256, 512, 1024};
-   // std::vector<int> nThreadsPerBlock;
-
-   // for (int i : default_threads_per_block)
-   //    nThreadsPerBlock.push_back(i);
-
-   // for (int b : nBlocks){
-   //    for (int t : nThreadsPerBlock){
+   if (ac > 1){
+      nBlocks = std::atoi(av[1]);
+      nThreadsPerBlock = std::atoi(av[2]);
+   }  // if user entered a value after the prog name, parse it
+        
    printf(" GPU configuration: %d blocks, %d threads per block \n", nBlocks, nThreadsPerBlock);
 
    // invoke the kernel on the device
@@ -229,8 +219,7 @@ main (int ac, char *av[])
    }
    else
       printf(" Wrote the output file %s \n", output_fname);
-   //    }
-   // }
+
    fclose(f);
    return 0;
 }
