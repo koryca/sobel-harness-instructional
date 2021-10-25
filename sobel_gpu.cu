@@ -119,11 +119,11 @@ sobel_kernel_gpu(float *s,  // source image pixels
    int index = blockIdx.x * blockDim.x + threadIdx.x;
    int stride  = blockDim.x * gridDim.x;
    for (int i = index; i < n; i+=stride){
-      printf("n is %d \n", n);
+      printf("stride is %d \n", stride);
       printf("i is %d \n", i);
       printf("ncols is %d \n", ncols);
       //compute row and column from i 
-      int r = i/ncols+1;
+      int r = i/ncols;
       printf("r is %d \n", r);
       int j = i%ncols;
       printf("j is %d \n", j);
