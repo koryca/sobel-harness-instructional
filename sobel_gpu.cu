@@ -117,7 +117,7 @@ sobel_kernel_gpu(float *s,  // source image pixels
    int stride  = blockDim.x * gridDim.x;
    for (int i = index; i < n; i+=stride){
       //compute row and column from i 
-      int r = i/ncols;
+      int r = i-ncols;
       int j = i%ncols;
       d[i] = sobel_filtered_pixel(s, r, j, ncols, nrows, gx, gy);
    }
