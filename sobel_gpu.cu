@@ -63,7 +63,6 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
 
    // ADD CODE HERE:  add your code here for computing the sobel stencil computation at location (i,j)
    // of input s, returning a float
-   printf("test");
    double tmp_x=0.0;
    double tmp_y=0.0;
    
@@ -116,12 +115,11 @@ sobel_kernel_gpu(float *s,  // source image pixels
    // your processing motif will be very similar here to that we used for vector add in Lab #2
    int index = blockIdx.x * blockDim.x + threadIdx.x;
    int stride  = blockDim.x * gridDim.x;
-   printf("index is %d \n", index);
-   printf("stride is %d \n", stride);
    for (int i = index; i < n; i+=stride){
       //compute row and column from i 
+      int r = i+1;
       int j = ncols - i;
-      d[i] = sobel_filtered_pixel(s, i, i, ncols, nrows, gx, gy);
+      d[i] = sobel_filtered_pixel(s, r, j, ncols, nrows, gx, gy);
    }
 }
 
