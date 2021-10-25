@@ -93,9 +93,9 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
    #pragma omp parallel for collapse(2)
    for(int i = 0; i < nrows; i++){
       for(int j = 0; j < ncols; j++){
-         if(i==0 || j==0) out[i+j] = 0.0;
+         if(i==0 || j==0 || i==(nrows-1) || j==(ncols-1)) out[i+j] = 0.0;
          out[i+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
-         printf("out is: %f \n", out[i+j]);
+         // printf("out is: %f \n", out[i+j]);
       }
    }
 }
