@@ -65,6 +65,7 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
    float tmp_y=0.0;
    //j: row i:col
    // int s_offset_x = i*nrows + j;
+   if(i==0 || j==0 || i ==(nrows-1) || j==(ncols-1)) return 0.0;
    int s_offset = (i-1)*ncols + (j-1);  
    // printf("x offset is %d \n", s_offset_x);
    for (int jj = 0; jj<3; jj++, s_offset += ncols){
@@ -116,8 +117,8 @@ sobel_kernel_gpu(float *s,  // source image pixels
       // printf("r is %d \n", r);
       int j = i%ncols;
       // printf("j is %d \n", j);
-      // d[i] = sobel_filtered_pixel(s, r, j, ncols, nrows, gx, gy);
-      d[i] = 0.5;
+      d[i] = sobel_filtered_pixel(s, r, j, ncols, nrows, gx, gy);
+      // d[i] = 0.5;
    }
 }
 
